@@ -65,7 +65,7 @@ void win_init_font(const win_env_t *e, const char *fontstr)
 void win_alloc_color(const win_env_t *e, const char *name, XftColor *col)
 {
 	if (!XftColorAllocName(e->dpy, DefaultVisual(e->dpy, e->scr),
-	                       DefaultColormap(e->dpy, e->scr), name, col))
+						   DefaultColormap(e->dpy, e->scr), name, col))
 	{
 		error(EXIT_FAILURE, 0, "Error allocating color '%s'", name);
 	}
@@ -77,8 +77,8 @@ const char* win_res(XrmDatabase db, const char *name, const char *def)
 	XrmValue ret;
 
 	if (db != None &&
-	    XrmGetResource(db, name, name, &type, &ret) &&
-	    STREQ(type, "String"))
+		XrmGetResource(db, name, name, &type, &ret) &&
+		STREQ(type, "String"))
 	{
 		return ret.addr;
 	} else {
@@ -171,7 +171,7 @@ void win_open(win_t *win)
 		gmask = 0;
 	else
 		gmask = XParseGeometry(options->geometry, &win->x, &win->y,
-		                       &win->w, &win->h);
+							   &win->w, &win->h);
 	if ((gmask & WidthValue) != 0)
 		sizehints.flags |= USSize;
 	else
@@ -193,7 +193,7 @@ void win_open(win_t *win)
 		if ((gmask & YNegative) != 0) {
 			win->y += e->scrh - win->h;
 			sizehints.win_gravity = sizehints.win_gravity == NorthEastGravity
-			                      ? SouthEastGravity : SouthWestGravity;
+								  ? SouthEastGravity : SouthWestGravity;
 		}
 		sizehints.flags |= USPosition;
 	} else {
@@ -201,21 +201,21 @@ void win_open(win_t *win)
 	}
 
 	win->xwin = XCreateWindow(e->dpy, parent,
-	                          win->x, win->y, win->w, win->h, 0,
-	                          e->depth, InputOutput, e->vis, 0, NULL);
+							  win->x, win->y, win->w, win->h, 0,
+							  e->depth, InputOutput, e->vis, 0, NULL);
 	if (win->xwin == None)
 		error(EXIT_FAILURE, 0, "Error creating X window");
 
 	XSelectInput(e->dpy, win->xwin,
-	             ButtonReleaseMask | ButtonPressMask | KeyPressMask |
-	             PointerMotionMask | StructureNotifyMask);
+				 ButtonReleaseMask | ButtonPressMask | KeyPressMask |
+				 PointerMotionMask | StructureNotifyMask);
 
 	for (i = 0; i < ARRLEN(cursors); i++) {
 		if (i != CURSOR_NONE)
 			cursors[i].icon = XCreateFontCursor(e->dpy, cursors[i].name);
 	}
 	if (XAllocNamedColor(e->dpy, DefaultColormap(e->dpy, e->scr), "black",
-	                     &col, &col) == 0)
+						 &col, &col) == 0)
 	{
 		error(EXIT_FAILURE, 0, "Error allocating color 'black'");
 	}
@@ -237,9 +237,9 @@ void win_open(win_t *win)
 				icon_data[n++] = icon_colors[icons[i].data[j] & 0x0F];
 		}
 		XChangeProperty(e->dpy, win->xwin,
-		                atoms[ATOM__NET_WM_ICON], XA_CARDINAL, 32,
-		                i == 0 ? PropModeReplace : PropModeAppend,
-		                (unsigned char *) icon_data, n);
+						atoms[ATOM__NET_WM_ICON], XA_CARDINAL, 32,
+						i == 0 ? PropModeReplace : PropModeAppend,
+						(unsigned char *) icon_data, n);
 	}
 	free(icon_data);
 
@@ -262,7 +262,7 @@ void win_open(win_t *win)
 	win->buf.w = e->scrw;
 	win->buf.h = e->scrh;
 	win->buf.pm = XCreatePixmap(e->dpy, win->xwin,
-	                            win->buf.w, win->buf.h, e->depth);
+								win->buf.w, win->buf.h, e->depth);
 	XSetForeground(e->dpy, gc, win->bg.pixel);
 	XFillRectangle(e->dpy, win->buf.pm, gc, 0, 0, win->buf.w, win->buf.h);
 	XSetWindowBackgroundPixmap(e->dpy, win->xwin, win->buf.pm);
@@ -318,7 +318,7 @@ void win_toggle_fullscreen(win_t *win)
 	cm->data.l[1] = atoms[ATOM__NET_WM_STATE_FULLSCREEN];
 
 	XSendEvent(win->env.dpy, DefaultRootWindow(win->env.dpy), False,
-	           SubstructureNotifyMask | SubstructureRedirectMask, &ev);
+			   SubstructureNotifyMask | SubstructureRedirectMask, &ev);
 }
 
 void win_toggle_bar(win_t *win)
@@ -343,7 +343,7 @@ void win_clear(win_t *win)
 		win->buf.w = MAX(win->buf.w, win->w);
 		win->buf.h = MAX(win->buf.h, win->h + win->bar.h);
 		win->buf.pm = XCreatePixmap(e->dpy, win->xwin,
-		                            win->buf.w, win->buf.h, e->depth);
+									win->buf.w, win->buf.h, e->depth);
 	}
 	XSetForeground(e->dpy, gc, win->bg.pixel);
 	XFillRectangle(e->dpy, win->buf.pm, gc, 0, 0, win->buf.w, win->buf.h);
@@ -353,7 +353,7 @@ void win_clear(win_t *win)
 	win_draw_text(win, NULL, NULL, 0, 0, text, len, 0)
 
 int win_draw_text(win_t *win, XftDraw *d, const XftColor *color, int x, int y,
-                  char *text, int len, int w)
+				  char *text, int len, int w)
 {
 	int err, tw = 0;
 	char *t, *next;
@@ -370,8 +370,8 @@ int win_draw_text(win_t *win, XftDraw *d, const XftColor *color, int x, int y,
 			fccharset = FcCharSetCreate();
 			FcCharSetAddChar(fccharset, rune);
 			f = XftFontOpen(win->env.dpy, win->env.scr, FC_CHARSET, FcTypeCharSet,
-			                fccharset, FC_SCALABLE, FcTypeBool, FcTrue,
-			                FC_SIZE, FcTypeDouble, fontsize, NULL);
+							fccharset, FC_SCALABLE, FcTypeBool, FcTrue,
+							FC_SIZE, FcTypeDouble, fontsize, NULL);
 			FcCharSetDestroy(fccharset);
 		}
 		XftTextExtentsUtf8(win->env.dpy, f, (XftChar8*)t, next - t, &ext);
@@ -400,7 +400,7 @@ void win_draw_bar(win_t *win)
 	y = win->h + font->ascent + V_TEXT_PAD;
 	w = win->w - 2*H_TEXT_PAD;
 	d = XftDrawCreate(e->dpy, win->buf.pm, DefaultVisual(e->dpy, e->scr),
-	                  DefaultColormap(e->dpy, e->scr));
+					  DefaultColormap(e->dpy, e->scr));
 
 	XSetForeground(e->dpy, gc, win->bar_bg.pixel);
 	XFillRectangle(e->dpy, win->buf.pm, gc, 0, win->h, win->w, win->bar.h);
@@ -434,7 +434,7 @@ void win_draw(win_t *win)
 }
 
 void win_draw_rect(win_t *win, int x, int y, int w, int h, bool fill, int lw,
-                   unsigned long col)
+				   unsigned long col)
 {
 	XGCValues gcval;
 
@@ -454,11 +454,11 @@ void win_set_title(win_t *win, const char *title)
 	XSetIconName(win->env.dpy, win->xwin, title);
 
 	XChangeProperty(win->env.dpy, win->xwin, atoms[ATOM__NET_WM_NAME],
-	                XInternAtom(win->env.dpy, "UTF8_STRING", False), 8,
-	                PropModeReplace, (unsigned char *) title, strlen(title));
+					XInternAtom(win->env.dpy, "UTF8_STRING", False), 8,
+					PropModeReplace, (unsigned char *) title, strlen(title));
 	XChangeProperty(win->env.dpy, win->xwin, atoms[ATOM__NET_WM_ICON_NAME],
-	                XInternAtom(win->env.dpy, "UTF8_STRING", False), 8,
-	                PropModeReplace, (unsigned char *) title, strlen(title));
+					XInternAtom(win->env.dpy, "UTF8_STRING", False), 8,
+					PropModeReplace, (unsigned char *) title, strlen(title));
 }
 
 void win_set_cursor(win_t *win, cursor_t cursor)

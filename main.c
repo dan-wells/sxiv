@@ -82,10 +82,10 @@ struct {
 } keyhandler;
 
 timeout_t timeouts[] = {
-	{ { 0, 0 }, false, redraw       },
+	{ { 0, 0 }, false, redraw		},
 	{ { 0, 0 }, false, reset_cursor },
-	{ { 0, 0 }, false, animate      },
-	{ { 0, 0 }, false, slideshow    },
+	{ { 0, 0 }, false, animate		},
+	{ { 0, 0 }, false, slideshow	},
 	{ { 0, 0 }, false, clear_resize },
 };
 
@@ -109,7 +109,7 @@ void check_add_file(char *filename, bool given)
 		return;
 
 	if (access(filename, R_OK) < 0 ||
-	    (path = realpath(filename, NULL)) == NULL)
+		(path = realpath(filename, NULL)) == NULL)
 	{
 		if (given)
 			error(0, errno, "%s", filename);
@@ -149,7 +149,7 @@ void remove_file(int n, bool manual)
 	if (n + 1 < filecnt) {
 		if (tns.thumbs != NULL) {
 			memmove(tns.thumbs + n, tns.thumbs + n + 1, (filecnt - n - 1) *
-			        sizeof(*tns.thumbs));
+					sizeof(*tns.thumbs));
 			memset(tns.thumbs + filecnt - 1, 0, sizeof(*tns.thumbs));
 		}
 		memmove(files + n, files + n + 1, (filecnt - n - 1) * sizeof(*files));
@@ -507,9 +507,9 @@ void run_key_handler(const char *key, unsigned int mask)
 	win_set_cursor(&win, CURSOR_WATCH);
 
 	snprintf(kstr, sizeof(kstr), "%s%s%s%s",
-	         mask & ControlMask ? "C-" : "",
-	         mask & Mod1Mask    ? "M-" : "",
-	         mask & ShiftMask   ? "S-" : "", key);
+			 mask & ControlMask ? "C-" : "",
+			 mask & Mod1Mask	? "M-" : "",
+			 mask & ShiftMask	? "S-" : "", key);
 
 	if ((pid = fork()) == 0) {
 		close(pfd[1]);
@@ -597,9 +597,9 @@ void on_keypress(XKeyEvent *kev)
 		return;
 	} else for (i = 0; i < ARRLEN(keys); i++) {
 		if (keys[i].ksym == ksym &&
-		    MODMASK(keys[i].mask | sh) == MODMASK(kev->state) &&
-		    keys[i].cmd >= 0 && keys[i].cmd < CMD_COUNT &&
-		    (cmds[keys[i].cmd].mode < 0 || cmds[keys[i].cmd].mode == mode))
+			MODMASK(keys[i].mask | sh) == MODMASK(kev->state) &&
+			keys[i].cmd >= 0 && keys[i].cmd < CMD_COUNT &&
+			(cmds[keys[i].cmd].mode < 0 || cmds[keys[i].cmd].mode == mode))
 		{
 			if (cmds[keys[i].cmd].func(keys[i].arg))
 				dirty = true;
@@ -622,9 +622,9 @@ void on_buttonpress(XButtonEvent *bev)
 
 		for (i = 0; i < ARRLEN(buttons); i++) {
 			if (buttons[i].button == bev->button &&
-			    MODMASK(buttons[i].mask) == MODMASK(bev->state) &&
-			    buttons[i].cmd >= 0 && buttons[i].cmd < CMD_COUNT &&
-			    (cmds[buttons[i].cmd].mode < 0 || cmds[buttons[i].cmd].mode == mode))
+				MODMASK(buttons[i].mask) == MODMASK(bev->state) &&
+				buttons[i].cmd >= 0 && buttons[i].cmd < CMD_COUNT &&
+				(cmds[buttons[i].cmd].mode < 0 || cmds[buttons[i].cmd].mode == mode))
 			{
 				if (cmds[buttons[i].cmd].func(buttons[i].arg))
 					dirty = true;
@@ -662,7 +662,7 @@ void on_buttonpress(XButtonEvent *bev)
 						if (sel >= 0 && mark_image(sel, on))
 							redraw();
 						XMaskEvent(win.env.dpy,
-						           ButtonPressMask | ButtonReleaseMask | PointerMotionMask, &e);
+								   ButtonPressMask | ButtonReleaseMask | PointerMotionMask, &e);
 						if (e.type == ButtonPress || e.type == ButtonRelease)
 							break;
 						while (XCheckTypedEvent(win.env.dpy, MotionNotify, &e));
@@ -673,7 +673,7 @@ void on_buttonpress(XButtonEvent *bev)
 			case Button4:
 			case Button5:
 				if (tns_scroll(&tns, bev->button == Button4 ? DIR_UP : DIR_DOWN,
-				               (bev->state & ControlMask) != 0))
+							   (bev->state & ControlMask) != 0))
 					redraw();
 				break;
 		}
@@ -751,7 +751,7 @@ void run(void)
 						break;
 					case KeyPress:
 						discard = (nextev.type == KeyPress || nextev.type == KeyRelease)
-						          && ev.xkey.keycode == nextev.xkey.keycode;
+								  && ev.xkey.keycode == nextev.xkey.keycode;
 						break;
 				}
 			}

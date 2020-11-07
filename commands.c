@@ -241,14 +241,14 @@ bool cg_navigate_marked(arg_t n)
 		n *= prefix;
 	d = n > 0 ? 1 : -1;
 	for (i = fileidx + d; n != 0; i += d) {
-        if (i > filecnt) {
-            // loop back to check for first marked file
-            i = 0;
-        }
-        else if (i < 0) {
-            // loop round to check for last marked file
-            i = filecnt - 1;
-        }
+		if (i > filecnt) {
+			// loop back to check for first marked file
+			i = 0;
+		}
+		else if (i < 0) {
+			// loop round to check for last marked file
+			i = filecnt - 1;
+		}
 		if (files[i].flags & FF_MARK) {
 			n -= d;
 			new = i;
@@ -284,13 +284,13 @@ bool ci_navigate(arg_t n)
 		n *= prefix;
 	n += fileidx;
 	if (n < 0) {
-        // loop round to end
-        n = filecnt - 1;
-    }
+		// loop round to end
+		n = filecnt - 1;
+	}
 	if (n >= filecnt) {
-        // loop back to beginning
-        n = 0;
-    }
+		// loop back to beginning
+		n = 0;
+	}
 
 	if (n != fileidx) {
 		load_image(n);
@@ -375,7 +375,7 @@ bool ci_drag(arg_t mode)
 			win_draw(&win);
 		}
 		XMaskEvent(win.env.dpy,
-		           ButtonPressMask | ButtonReleaseMask | PointerMotionMask, &e);
+				   ButtonPressMask | ButtonReleaseMask | PointerMotionMask, &e);
 		if (e.type == ButtonPress || e.type == ButtonRelease)
 			break;
 		while (XCheckTypedEvent(win.env.dpy, MotionNotify, &e));
@@ -454,11 +454,11 @@ bool ct_reload_all(arg_t _)
 }
 
 
-#undef  G_CMD
+#undef	G_CMD
 #define G_CMD(c) { -1, cg_##c },
-#undef  I_CMD
+#undef	I_CMD
 #define I_CMD(c) { MODE_IMAGE, ci_##c },
-#undef  T_CMD
+#undef	T_CMD
 #define T_CMD(c) { MODE_THUMB, ct_##c },
 
 const cmd_t cmds[CMD_COUNT] = {
