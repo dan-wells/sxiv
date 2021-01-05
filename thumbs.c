@@ -21,6 +21,7 @@
 #include "config.h"
 
 #include <errno.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -415,7 +416,7 @@ void tns_render(tns_t *tns)
 	imlib_context_set_drawable(win->buf.pm);
 
 	tns->cols = MAX(1, win->w / tns->dim);
-	tns->rows = MAX(1, win->h / tns->dim);
+	tns->rows = MAX(1, win->h / tns->dimy);
 
 	if (*tns->cnt < tns->cols * tns->rows) {
 		tns->first = 0;
@@ -430,7 +431,7 @@ void tns_render(tns_t *tns)
 	}
 	r = cnt % tns->cols ? 1 : 0;
 	tns->x = x = (win->w - MIN(cnt, tns->cols) * tns->dim) / 2 + tns->bw + 3;
-	tns->y = y = (win->h - (cnt / tns->cols + r) * tns->dim) / 2 + tns->bw + 3;
+	tns->y = y = (win->h - (cnt / tns->cols + r) * tns->dimy) / 2 + tns->bw + 3;
 	tns->loadnext = *tns->cnt;
 	tns->end = tns->first + cnt;
 
@@ -455,7 +456,7 @@ void tns_render(tns_t *tns)
 		}
 		if ((i + 1) % tns->cols == 0) {
 			x = tns->x;
-			y += tns->dim;
+			y += tns->dimy;
 		} else {
 			x += tns->dim;
 		}
@@ -569,6 +570,11 @@ bool tns_zoom(tns_t *tns, int d)
 	tns->bw = ((thumb_sizes[tns->zl] - 1) >> 5) + 1;
 	tns->bw = MIN(tns->bw, 4);
 	tns->dim = thumb_sizes[tns->zl] + 2 * tns->bw + 6;
+    if (options->video_thumbs) {
+        tns->dimy = round(0.75 * thumb_sizes[tns->zl]) + 2 * tns->bw + 6;
+    } else {
+        tns->dimy = tns->dim;
+    }
 
 	if (tns->zl != oldzl) {
 		for (i = 0; i < *tns->cnt; i++)
@@ -585,7 +591,7 @@ int tns_translate(tns_t *tns, int x, int y)
 	if (x < tns->x || y < tns->y)
 		return -1;
 
-	n = tns->first + (y - tns->y) / tns->dim * tns->cols +
+	n = tns->first + (y - tns->y) / tns->dimy * tns->cols +
 	    (x - tns->x) / tns->dim;
 	if (n >= *tns->cnt)
 		n = -1;

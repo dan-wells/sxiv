@@ -285,6 +285,7 @@ struct opt {
 	bool thumb_mode;
 	bool clean_cache;
 	bool private_mode;
+    bool video_thumbs;
 };
 
 extern const opt_t *options;
@@ -322,6 +323,7 @@ struct tns {
 	int zl;
 	int bw;
 	int dim;
+    int dimy;
 
 	bool dirty;
 };
